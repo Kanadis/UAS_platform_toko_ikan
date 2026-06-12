@@ -1,4 +1,4 @@
-@import 'tailwindcss';
+@import "tailwindcss";
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
@@ -6,6 +6,243 @@
 @source '../**/*.js';
 
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-sans:
+        "Instrument Sans", ui-sans-serif, system-ui, sans-serif,
+        "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
+        "Noto Color Emoji";
+}
+
+/* ==================== GLOBAL ==================== */
+body {
+    background-color: #f8f9fa;
+    font-family: "Segoe UI", sans-serif;
+    color: #212529;
+}
+
+/* ==================== NAVBAR ==================== */
+.navbar-brand {
+    font-weight: 600;
+    color: #0d6efd !important;
+    font-size: 18px;
+}
+
+.navbar-brand i {
+    margin-right: 4px;
+}
+
+.nav-link {
+    font-size: 14px;
+    color: #495057 !important;
+}
+
+.nav-link:hover,
+.nav-link.active {
+    color: #0d6efd !important;
+}
+
+/* ==================== CARD ==================== */
+.card {
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+}
+
+/* ==================== BUTTON ==================== */
+.btn {
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+.btn-primary {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+}
+
+.btn-primary:hover {
+    background-color: #0b5ed7;
+    border-color: #0b5ed7;
+}
+
+/* ==================== FORM ==================== */
+.form-control,
+.form-select {
+    border-radius: 8px;
+    font-size: 14px;
+    padding: 10px 12px;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.15);
+}
+
+.form-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: #495057;
+    margin-bottom: 4px;
+}
+
+/* ==================== BADGE ==================== */
+.badge-stok {
+    font-size: 12px;
+    padding: 4px 12px;
+    border-radius: 20px;
+}
+
+/* ==================== AUTH ==================== */
+.auth-card {
+    max-width: 420px;
+    margin: 60px auto;
+    background: white;
+    border-radius: 16px;
+    border: 1px solid #e9ecef;
+    padding: 2rem;
+}
+
+.auth-brand {
+    font-size: 22px;
+    font-weight: 600;
+    color: #0d6efd;
+    text-align: center;
+    margin-bottom: 0.25rem;
+}
+
+.auth-subtitle {
+    text-align: center;
+    color: #6c757d;
+    font-size: 14px;
+    margin-bottom: 1.75rem;
+}
+
+/* ==================== PRODUK ==================== */
+.produk-card {
+    border-radius: 12px;
+    border: 1px solid #e9ecef;
+    transition: box-shadow 0.2s;
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+}
+
+.produk-card:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    color: inherit;
+}
+
+.produk-img {
+    background-color: #e9ecef;
+    border-radius: 12px 12px 0 0;
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #adb5bd;
+    font-size: 48px;
+    overflow: hidden;
+}
+
+.produk-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.produk-nama {
+    font-size: 15px;
+    font-weight: 500;
+    margin-bottom: 2px;
+}
+
+.produk-jenis {
+    font-size: 12px;
+    color: #6c757d;
+    margin-bottom: 8px;
+}
+
+.produk-harga {
+    font-size: 16px;
+    font-weight: 600;
+    color: #0d6efd;
+}
+
+.produk-stok {
+    font-size: 12px;
+    color: #6c757d;
+}
+
+/* ==================== DETAIL PRODUK ==================== */
+.product-img-box {
+    background-color: #e9ecef;
+    border-radius: 12px;
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 8px;
+    color: #adb5bd;
+    font-size: 14px;
+    overflow: hidden;
+}
+
+.product-img-box i {
+    font-size: 64px;
+}
+
+.product-img-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 12px;
+}
+
+.price-text {
+    font-size: 28px;
+    font-weight: 600;
+    color: #0d6efd;
+}
+
+.stat-box {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 12px 16px;
+    border: 1px solid #e9ecef;
+}
+
+.stat-box .label {
+    font-size: 12px;
+    color: #6c757d;
+    margin-bottom: 2px;
+}
+
+.stat-box .value {
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.qty-input {
+    width: 100px;
+    text-align: center;
+    border-radius: 8px;
+    border: 1px solid #dee2e6;
+    padding: 6px 10px;
+    font-size: 15px;
+}
+
+.qty-input:focus {
+    outline: none;
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.15);
+}
+
+.subtotal-box {
+    background-color: #e7f1ff;
+    border-radius: 8px;
+    padding: 10px 14px;
+}
+
+/* ==================== FOOTER ==================== */
+footer {
+    background-color: white;
 }
