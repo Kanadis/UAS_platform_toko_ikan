@@ -2,33 +2,51 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Produk;
 use Illuminate\Http\Request;
+use App\Models\Produk;
 
 class ProdukController extends Controller
 {
-    // Halaman daftar semua produk (dashboard/beranda)
-    public function index()
+    public function index(Request $request)
     {
-        $produk = Produk::with('hargaTerbaru')
-                        ->where('stok_berat', '>', 0) // hanya tampilkan yang stok masih ada
-                        ->get();
-
-        return view('produk.index', compact('produk'));
+        $search = $request->get('search');
+        $jenis = $request->get('jenis');
+        
+        // Query produk
+        $query = Produk::with('hargaAktif');
+        
+        // Filter berdasarkan jenis_ikan (konsumsi atau bibit)
+        if ($jenis && $jenis != '') {
+            if ($jenis == 'konsumsi') {
+                $query->where('jenis_ikan', 'like', '%konsumsi%');
+            } elseif ($jenis == 'bibit') {
+                $query->where('jenis_ikan', 'like', '%bibit%');
+            }
+        }
+        
+        // Filter berdasarkan pencarian nama
+        if ($search) {
+            $query->where('nama_ikan', 'like', '%' . $search . '%');
+        }
+        
+        // Ambil data
+        $produk = $query->get();
+        
+        // Kelompokkan berdasarkan jenis
+        $produkKonsumsi = $produk->filter(function($item) {
+            return stripos($item->jenis_ikan, 'konsumsi') !== false;
+        });
+        
+        $produkBibit = $produk->filter(function($item) {
+            return stripos($item->jenis_ikan, 'bibit') !== false;
+        });
+        
+        return view('menu_dashboard', compact('produkKonsumsi', 'produkBibit', 'search', 'jenis'));
     }
-
-    // Halaman detail satu produk
+    
     public function show($id)
     {
-        // Ambil produk, kalau tidak ditemukan otomatis 404
-        $produk = Produk::findOrFail($id);
-
-        // Ambil harga terbaru dari history_harga
-        $harga = $produk->hargaTerbaru;
-
-        // Kalau produk belum punya harga sama sekali, lempar 404
-        abort_if(!$harga, 404, 'Harga produk belum tersedia.');
-
-        return view('produk.detail', compact('produk', 'harga'));
+        $produk = Produk::with('historyHarga')->findOrFail($id);
+        return view('produk_detail', compact('produk'));
     }
 }

@@ -2,42 +2,62 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Produk extends Model
 {
-    protected $table = 'produk';
+    use HasFactory;
 
+    protected $table = 'produk';
+    protected $primaryKey = 'id';
+    
     protected $fillable = [
-        'nama_ikan',
-        'jenis_ikan',
-        'stok_berat',
-        'foto',
+        'nama_ikan', 
+        'jenis_ikan', 
+        'stok_berat', 
+        'foto'
     ];
 
-    // Produk punya banyak history harga
-    public function HistoryHarga()
+    // Relasi ke history_harga
+    public function historyHarga()
     {
-        return $this->hasMany(HistoryHarga::class);
+        return $this->hasMany(HistoryHarga::class, 'produk_id', 'id');
     }
 
-    // Ambil harga terbaru produk ini
-    public function hargaTerbaru()
+    // Ambil harga aktif terbaru (berdasarkan tanggal)
+    public function hargaAktif()
     {
-        return $this->hasOne(HistoryHarga::class)
-                    ->latestOfMany('tanggal');
+        return $this->hasOne(HistoryHarga::class, 'produk_id', 'id')
+                    ->where('tanggal', '<=', date('Y-m-d'))
+                    ->orderBy('tanggal', 'desc')
+                    ->orderBy('created_at', 'desc');
     }
 
-    // Produk ada di banyak detail keranjang
-    public function detailKeranjang()
+    // Accessor untuk mendapatkan harga terbaru
+    public function getHargaAttribute()
     {
-        return $this->hasMany(DetailKeranjang::class);
+        $harga = $this->hargaAktif()->first();
+        return $harga ? $harga->harga : 0;
     }
-
-    /* Produk ada di banyak detail transaksi
-    public function detailTransaksi()
+    
+    // Accessor untuk mendapatkan satuan (dari jenis_ikan)
+    public function getSatuanAttribute()
     {
-        return $this->hasMany(DetailTransaksi::class);
+        // Menentukan satuan berdasarkan jenis_ikan
+        if (strpos(strtolower($this->jenis_ikan), 'bibit') !== false) {
+            return 'ekor';
+        }
+        return 'kg';
     }
-    */
+    
+    // Accessor untuk mendapatkan keterangan (dari stok_berat)
+    public function getKeteranganAttribute()
+    {
+        if ($this->satuan == 'kg') {
+            return $this->stok_berat . ' kg tersedia';
+        } else {
+            return $this->stok_berat . ' ekor tersedia';
+        }
+    }
 }
