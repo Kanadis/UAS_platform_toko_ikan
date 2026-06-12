@@ -1,21 +1,51 @@
 <?php
 
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\ProdukController;
-
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProdukController;
+use App\Http\Controllers\AuthController;
 
-Route::get('/', function () {
-    return redirect()->route('login');
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+*/
+
+// ==================== AUTH (Tanpa Login) ====================
+
+// Halaman login & register hanya bisa diakses jika belum login
+Route::middleware('guest')->group(function () {
+    Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+    Route::post('/login', [AuthController::class, 'login']);
+
+    Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
+    Route::post('/register', [AuthController::class, 'register']);
 });
 
-Route::get('/detaiLproduk', function () {
-    return view('detail_produk');
-});
+// Logout (harus sudah login)
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
 
-Route::get('/login', function () {
-    return view('auth.login');
-});
-Route::get('/registrasi', function () {
-    return view('auth.registrasi');
+// ==================== SEMUA HALAMAN HARUS LOGIN ====================
+
+Route::middleware('auth')->group(function () {
+    
+    // Halaman Beranda (harus login)
+    Route::get('/', [ProdukController::class, 'index'])->name('beranda');
+    Route::get('/beranda', [ProdukController::class, 'index'])->name('beranda');
+    
+    // Halaman Produk
+    Route::get('/produk', [ProdukController::class, 'index'])->name('produk.index');
+    Route::get('/produk/{id}', [ProdukController::class, 'show'])->name('produk.show');
+    
+    // Halaman Lainnya
+    Route::get('/riwayat', function () {
+        return view('riwayat');
+    })->name('riwayat');
+    
+    Route::get('/keranjang', function () {
+        return view('keranjang');
+    })->name('keranjang');
+    
+    Route::get('/akun', function () {
+        return view('akun');
+    })->name('akun');
 });

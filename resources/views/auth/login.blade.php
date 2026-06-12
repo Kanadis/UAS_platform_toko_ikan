@@ -44,7 +44,7 @@
         </div>
 
         {{-- Password --}}
-        <div class="mb-3">
+        <div class="mb-4">
             <label class="form-label">Password</label>
             <input
                 type="password"
@@ -56,12 +56,6 @@
             @error('password')
                 <div class="invalid-feedback">{{ $message }}</div>
             @enderror
-        </div>
-
-        {{-- Remember me --}}
-        <div class="mb-4 form-check" style="font-size: 13px;">
-            <input type="checkbox" class="form-check-input" name="remember" id="remember">
-            <label class="form-check-label text-secondary" for="remember">Ingat saya</label>
         </div>
 
         <button type="submit" class="btn btn-primary w-100">Masuk</button>

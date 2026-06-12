@@ -2,21 +2,25 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class HistoryHarga extends Model
 {
-    protected $table = 'history_harga';
+    use HasFactory;
 
+    protected $table = 'history_harga';
+    protected $primaryKey = 'id';
+    
     protected $fillable = [
-        'produk_id',
-        'tanggal',
-        'harga',
+        'produk_id', 
+        'tanggal', 
+        'harga'
     ];
 
-    // History harga milik satu produk
-    public function Produk()
+    // Relasi ke produk
+    public function produk()
     {
-        return $this->belongsTo(Produk::class);
+        return $this->belongsTo(Produk::class, 'produk_id', 'id');
     }
 }
