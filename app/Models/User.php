@@ -18,10 +18,14 @@ class User extends Authenticatable
      *
      * @var list<string>
      */
+    protected $table = 'users';
+
     protected $fillable = [
-        'name',
+        'nama',
+        'no_telp',
         'email',
         'password',
+        'role',
     ];
 
     /**
@@ -46,4 +50,5 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
 }
