@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProdukController;
 use App\Http\Controllers\AuthController;
-
+use App\Http\Controllers\KeranjangController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -41,11 +41,34 @@ Route::middleware('auth')->group(function () {
         return view('riwayat');
     })->name('riwayat');
     
-    Route::get('/keranjang', function () {
-        return view('keranjang');
-    })->name('keranjang');
+    Route::get('/keranjang', [KeranjangController::class, 'index'])->name('keranjang');
     
     Route::get('/akun', function () {
         return view('akun');
     })->name('akun');
+
 });
+
+// ==================== FITUR KERANJANG ====================
+Route::post('/keranjang/tambah/{id}', [KeranjangController::class, 'tambah'])->name('keranjang.tambah');
+
+// Rute untuk menghapus produk dari keranjang
+Route::delete('/keranjang/hapus/{id}', [KeranjangController::class, 'hapus'])->name('keranjang.hapus');
+
+// Rute untuk menampilkan halaman desain Checkout
+Route::get('/checkout', [App\Http\Controllers\TransaksiController::class, 'halamanCheckout'])->name('checkout.halaman');
+
+// Rute untuk memproses data saat tombol "Buat Pesanan" ditekan
+Route::post('/checkout/proses', [App\Http\Controllers\TransaksiController::class, 'prosesCheckout'])->name('checkout.proses');
+
+// Rute untuk menampilkan halaman instruksi pembayaran setelah checkout
+Route::get('/checkout/instruksi', [App\Http\Controllers\TransaksiController::class, 'instruksi'])->name('checkout.instruksi');
+
+// Rute untuk melihat status pesanan yang sedang aktif
+Route::get('/status-pesanan', [App\Http\Controllers\TransaksiController::class, 'statusPesanan'])->name('status.pesanan');
+
+// Rute untuk membatalkan transaksi yang sedang berjalan
+Route::post('/status-pesanan/batal/{id}', [App\Http\Controllers\TransaksiController::class, 'batal'])->name('transaksi.batal');
+
+// Rute untuk simulasi pelunasan pembayaran
+Route::post('/status-pesanan/bayar/{id}', [App\Http\Controllers\TransaksiController::class, 'bayar'])->name('transaksi.bayar');
