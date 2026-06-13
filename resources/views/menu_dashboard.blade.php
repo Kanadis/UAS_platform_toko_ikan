@@ -5,7 +5,6 @@
 @section('title', 'Beranda - Toko Ikan')
 
 @section('content')
-<!-- Search Section -->
 <div class="card shadow-sm mb-4">
     <div class="card-body">
         <form method="GET" action="{{ route('beranda') }}" class="row g-3">
@@ -29,7 +28,6 @@
     </div>
 </div>
 
-<!-- Ikan Konsumsi Section -->
 @if(isset($produkKonsumsi) && $produkKonsumsi->count() > 0)
 <div class="mb-5">
     <div class="d-flex align-items-center mb-3">
@@ -58,10 +56,13 @@
                     @else
                         <span class="badge bg-danger mb-2">Habis</span>
                     @endif
-                    <button class="btn btn-success w-100" 
-                            onclick="pesanProduk('{{ $item->nama_ikan }}', {{ $item->harga }})">
-                        <i class="bi bi-cart-plus"></i> Pesan Sekarang
-                    </button>
+                    
+                    <form action="{{ route('keranjang.tambah', $item->id) }}" method="POST">
+                        @csrf
+                        <button type="submit" class="btn btn-success w-100" {{ (($item->stok_berat ?? 0) <= 0) ? 'disabled' : '' }}>
+                            <i class="bi bi-cart-plus"></i> Pesan Sekarang
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -70,7 +71,6 @@
 </div>
 @endif
 
-<!-- Bibit Ikan Section -->
 @if(isset($produkBibit) && $produkBibit->count() > 0)
 <div class="mb-5">
     <div class="d-flex align-items-center mb-3">
@@ -99,10 +99,13 @@
                     @else
                         <span class="badge bg-danger mb-2">Habis</span>
                     @endif
-                    <button class="btn btn-success w-100" 
-                            onclick="pesanProduk('{{ $item->nama_ikan }}', {{ $item->harga }})">
-                        <i class="bi bi-cart-plus"></i> Pesan Bibit
-                    </button>
+                    
+                    <form action="{{ route('keranjang.tambah', $item->id) }}" method="POST">
+                        @csrf
+                        <button type="submit" class="btn btn-success w-100" {{ (($item->stok_berat ?? 0) <= 0) ? 'disabled' : '' }}>
+                            <i class="bi bi-cart-plus"></i> Pesan Bibit
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -111,7 +114,6 @@
 </div>
 @endif
 
-<!-- Jika tidak ada hasil -->
 @if((!isset($produkKonsumsi) || $produkKonsumsi->count() == 0) && 
     (!isset($produkBibit) || $produkBibit->count() == 0))
     <div class="text-center py-5">
@@ -124,4 +126,4 @@
         @endif
     </div>
 @endif
-@endsection 
+@endsection
