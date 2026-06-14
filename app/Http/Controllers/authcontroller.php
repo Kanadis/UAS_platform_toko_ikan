@@ -26,6 +26,10 @@ class AuthController extends Controller
         // Coba login dengan email dan password (tanpa remember)
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
+
+            if (Auth::user()->role === 'admin') {
+                return redirect()->route('admin.dashboard_admin');
+            }
             return redirect()->intended('/beranda');
         }
         

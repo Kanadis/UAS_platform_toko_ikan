@@ -4,6 +4,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProdukController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\KeranjangController;
+use App\Http\Controllers\AdminProdukController;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\RiwayatController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -37,16 +40,33 @@ Route::middleware('auth')->group(function () {
     Route::get('/produk/{id}', [ProdukController::class, 'show'])->name('produk.show');
     
     // Halaman Lainnya
-    Route::get('/riwayat', function () {
-        return view('riwayat');
-    })->name('riwayat');
+    Route::get('/riwayat', [RiwayatController::class, 'index'])->name('riwayat');
     
+
     Route::get('/keranjang', [KeranjangController::class, 'index'])->name('keranjang');
     
+    //alamat
+    Route::get('/profil/alamat', [App\Http\Controllers\ProfilController::class, 'formAlamat'])->name('profil.alamat');
+    Route::post('/profil/alamat', [App\Http\Controllers\ProfilController::class, 'simpanAlamat'])->name('profil.alamat.simpan');
+
     Route::get('/akun', function () {
         return view('akun');
     })->name('akun');
 
+});
+
+Route::middleware(['auth', 'is_admin'])->prefix('admin')->name('admin.')->group(function () {
+    // Route untuk manajemen pesanan (tambahkan ini)
+    Route::get('/orders', [OrderController::class, 'index'])->name('order.index');
+    Route::get('/orders/{id}', [OrderController::class, 'show'])->name('order.show');
+    Route::put('/orders/{id}/status', [OrderController::class, 'updateStatus'])->name('order.update-status');
+
+    Route::get('/dashboard_admin', [AdminProdukController::class, 'dashboard'])->name('dashboard_admin');
+    Route::post('/produk', [AdminProdukController::class, 'store'])->name('produk.store');
+    Route::get('/produk/{id}/edit', [AdminProdukController::class, 'edit'])->name('produk.edit');
+    Route::put('/produk/{id}', [AdminProdukController::class, 'update'])->name('produk.update');
+    Route::delete('/produk/{id}', [AdminProdukController::class, 'destroy'])->name('produk.destroy');
+    
 });
 
 // ==================== FITUR KERANJANG ====================

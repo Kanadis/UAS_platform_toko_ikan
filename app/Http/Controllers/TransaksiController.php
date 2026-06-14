@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Alamat;
 use Illuminate\Http\Request;
 use App\Models\Keranjang;
 use App\Models\Transaksi;
@@ -19,12 +20,14 @@ class TransaksiController extends Controller
         $keranjang = Keranjang::with('DetailKeranjang.Produk')->where('user_id', $user->id)->first();
 
         // Ambil alamat dari database menggunakan Query Builder
-        $alamat = DB::table('alamat')->where('user_id', $user->id)->first();
+        $alamat = Alamat::where('user_id', $user->id)->first();
 
         if (!$keranjang || $keranjang->DetailKeranjang->count() == 0) {
             return redirect()->route('keranjang')->with('error', 'Keranjang Anda kosong!');
         }
-
+        if (!$alamat) {
+        return redirect()->route('profil.alamat')->with('warning', 'Silakan isi alamat pengiriman terlebih dahulu.');
+        }
         return view('transaksi.checkout', compact('keranjang', 'alamat'));
     }
 
