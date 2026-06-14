@@ -84,24 +84,28 @@
 
             {{-- Menu kiri --}}
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('beranda') ? 'active' : '' }}" 
-                       href="{{ route('beranda') }}">
-                        <i class="bi bi-house"></i> Beranda
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('riwayat') ? 'active' : '' }}" 
-                       href="{{ route('riwayat') }}">
-                        <i class="bi bi-clock-history"></i> Riwayat
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('keranjang') ? 'active' : '' }}" 
-                       href="{{ route('keranjang') }}">
-                        <i class="bi bi-cart"></i> Keranjang
-                    </a>
-                </li>
+                @auth
+                    @if(auth()->user()->role !== 'admin')
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('beranda') ? 'active' : '' }}" 
+                            href="{{ route('beranda') }}">
+                                <i class="bi bi-house"></i> Beranda
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('riwayat') ? 'active' : '' }}" 
+                            href="{{ route('riwayat') }}">
+                                <i class="bi bi-clock-history"></i> Riwayat
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('keranjang') ? 'active' : '' }}" 
+                            href="{{ route('keranjang') }}">
+                                <i class="bi bi-cart"></i> Keranjang
+                            </a>
+                        </li>
+                    @endif
+                @endauth
             </ul>
 
             {{-- Menu kanan --}}
@@ -120,8 +124,13 @@
                             @if(Auth::user()->role === 'admin')
                                 <li><hr class="dropdown-divider"></li>
                                 <li>
-                                    <a class="dropdown-item text-primary" href="#">
+                                    <a class="dropdown-item text-primary" href="{{ route('admin.dashboard_admin') }}">
                                         <i class="bi bi-speedometer2 me-2"></i> Dashboard Admin
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item text-primary" href="{{ route('admin.order.index') }}">
+                                        <i class="bi bi-receipt me-2"></i> Daftar Pesanan
                                     </a>
                                 </li>
                             @endif

@@ -14,9 +14,9 @@ class Produk extends Model
     
     protected $fillable = [
         'nama_ikan', 
-        'jenis_ikan', 
         'stok_berat', 
         'foto'
+        // 'jenis_ikan' dihapus
     ];
 
     // Relasi ke history_harga
@@ -41,23 +41,20 @@ class Produk extends Model
         return $harga ? $harga->harga : 0;
     }
     
-    // Accessor untuk mendapatkan satuan (dari jenis_ikan)
+    // Accessor untuk mendapatkan satuan (selalu kg karena tidak ada jenis)
     public function getSatuanAttribute()
     {
-        // Menentukan satuan berdasarkan jenis_ikan
-        if (strpos(strtolower($this->jenis_ikan), 'bibit') !== false) {
-            return 'ekor';
-        }
-        return 'kg';
+        return 'kg'; // atau jika ingin dinamis nanti, bisa dari kolom lain
     }
     
-    // Accessor untuk mendapatkan keterangan (dari stok_berat)
+    // Accessor untuk mendapatkan keterangan
     public function getKeteranganAttribute()
     {
-        if ($this->satuan == 'kg') {
-            return $this->stok_berat . ' kg tersedia';
-        } else {
-            return $this->stok_berat . ' ekor tersedia';
-        }
+        return $this->stok_berat . ' kg tersedia';
+    }
+
+    public function detailTransaksi()
+    {
+        return $this->hasMany(DetailTransaksi::class);
     }
 }
