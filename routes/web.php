@@ -45,9 +45,13 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/keranjang', [KeranjangController::class, 'index'])->name('keranjang');
     
-    //alamat
+    // Profil & Alamat
+    Route::get('/profil', [App\Http\Controllers\ProfilController::class, 'index'])->name('profil.index'); 
     Route::get('/profil/alamat', [App\Http\Controllers\ProfilController::class, 'formAlamat'])->name('profil.alamat');
     Route::post('/profil/alamat', [App\Http\Controllers\ProfilController::class, 'simpanAlamat'])->name('profil.alamat.simpan');
+    Route::get('/profil', [App\Http\Controllers\ProfilController::class, 'index'])->name('profil.index');
+    Route::put('/profil/update', [App\Http\Controllers\ProfilController::class, 'updateProfil'])->name('profil.update'); 
+
 
     Route::get('/akun', function () {
         return view('akun');

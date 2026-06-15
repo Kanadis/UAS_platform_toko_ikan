@@ -1,4 +1,4 @@
-{{-- resources/views/checkout.blade.php --}}
+{{-- resources/views/transaksi/checkout.blade.php --}}
 
 @extends('layouts.app')
 
@@ -21,7 +21,8 @@
                                 <p class="mb-1 fw-bold">{{ Auth::user()->name }} <span class="text-muted fw-normal">({{ $alamat->nomor_telp_alamat ?? '-' }})</span></p>
                                 <p class="mb-0 text-muted small">{{ $alamat->alamat_lengkap ?? 'Alamat belum diatur' }}</p>
                             </div>
-                            <a href="#" class="text-decoration-none small text-primary">Ubah ></a>
+                            {{-- PERUBAHAN DI SINI: Tautan Ubah kini mengarah ke form alamat dan mengirim status source=checkout --}}
+                            <a href="{{ route('profil.alamat', ['source' => 'checkout']) }}" class="text-decoration-none small text-primary">Ubah ></a>
                         </div>
                     </div>
                 </div>
