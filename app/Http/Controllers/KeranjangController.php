@@ -26,7 +26,7 @@ class KeranjangController extends Controller
     // === FUNGSI TAMBAH: Untuk memproses tombol Pesan Sekarang ===
     public function tambah(Request $request, $id)
     {
-        // 1. Pastikan user sudah login (hanya pembeli terdaftar yang bisa pesan)
+        // 1. Pastikan user sudah login
         if (!Auth::check()) {
             return redirect()->route('login')->with('error', 'Silakan login terlebih dahulu untuk memesan.');
         }
@@ -36,7 +36,7 @@ class KeranjangController extends Controller
         // 2. Pastikan produk yang mau dibeli itu ada
         $produk = Produk::findOrFail($id);
 
-        // 3. Cari keranjang milik user ini, kalau belum ada sistem otomatis membuatkan
+        // 3. Cari keranjang milik user ini
         $keranjang = Keranjang::firstOrCreate(
             ['user_id' => $user->id],
             ['tanggal_dibuat' => now()]
@@ -47,11 +47,11 @@ class KeranjangController extends Controller
                                  ->where('produk_id', $produk->id)
                                  ->first();
 
-        // Default jumlah beli adalah 1 (bisa diubah nanti kalau ada form input jumlah)
-        $jumlahBeli = $request->input('jumlah', 1);
+        // LOGIKA PINTAR: Ubah input menjadi float (desimal) agar bisa memproses koma/titik
+        $jumlahBeli = (float) $request->input('jumlah', 1);
 
         if ($detail) {
-            // Jika ikan sudah ada, cukup tambahkan jumlahnya agar tidak dobel/error
+            // Jika ikan sudah ada, tambahkan jumlah desimalnya
             $detail->jumlah += $jumlahBeli;
             $detail->save();
         } else {

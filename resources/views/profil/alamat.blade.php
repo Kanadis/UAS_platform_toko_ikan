@@ -1,40 +1,45 @@
+{{-- resources/views/profil/alamat.blade.php --}}
 @extends('layouts.app')
 
-@section('title', 'Alamat Pengiriman')
+@section('title', 'Alamat Pengiriman - Toko Ikan')
 
 @section('content')
-<div class="container">
+<div class="container mb-5">
     <div class="row justify-content-center">
         <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">Alamat Pengiriman</div>
-                <div class="card-body">
-                    @if(session('error'))
-                        <div class="alert alert-danger">{{ session('error') }}</div>
-                    @endif
-
+            <div class="card shadow-sm border-0 mt-3">
+                <div class="card-header bg-light border-bottom py-3">
+                    <h6 class="mb-0 text-dark">Alamat Pengiriman</h6>
+                </div>
+                <div class="card-body p-4 bg-white">
                     <form action="{{ route('profil.alamat.simpan') }}" method="POST">
                         @csrf
-                        <div class="mb-3">
-                            <label class="form-label">Alamat Lengkap</label>
-                            <textarea name="alamat_lengkap" class="form-control @error('alamat_lengkap') is-invalid @enderror" rows="3" required>{{ old('alamat_lengkap', $alamat->alamat_lengkap ?? '') }}</textarea>
-                            @error('alamat_lengkap') <div class="invalid-feedback">{{ $message }}</div> @enderror
-                        </div>
+                        {{-- INPUT TERSEMBUNYI: Menyimpan jejak halaman sebelumnya --}}
+                        <input type="hidden" name="source" value="{{ $source ?? 'checkout' }}">
 
-                        <div class="mb-3">
-                            <label class="form-label">Nomor Telepon (Alternatif)</label>
-                            <input type="text" name="nomor_telp_alamat" class="form-control @error('nomor_telp_alamat') is-invalid @enderror" value="{{ old('nomor_telp_alamat', $alamat->nomor_telp_alamat ?? '') }}">
-                            @error('nomor_telp_alamat') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                        <div class="mb-4">
+                            <label class="form-label text-dark">Alamat Lengkap</label>
+                            <textarea class="form-control" name="alamat_lengkap" rows="4" required>{{ old('alamat_lengkap', $alamat->alamat_lengkap ?? '') }}</textarea>
                         </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">Deskripsi (opsional, misal: Rumah, Kantor)</label>
-                            <input type="text" name="deskripsi" class="form-control @error('deskripsi') is-invalid @enderror" value="{{ old('deskripsi', $alamat->deskripsi ?? '') }}">
-                            @error('deskripsi') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                        
+                        <div class="mb-4">
+                            <label class="form-label text-dark">Nomor Telepon (Alternatif)</label>
+                            <input type="text" class="form-control" name="nomor_telp_alamat" value="{{ old('nomor_telp_alamat', $alamat->nomor_telp_alamat ?? '') }}">
                         </div>
-
-                        <button type="submit" class="btn btn-primary">Simpan Alamat</button>
-                        <a href="{{ route('checkout.halaman') }}" class="btn btn-secondary">Kembali</a>
+                        
+                        <div class="mb-4">
+                            <label class="form-label text-dark">Deskripsi (opsional, misal: Rumah, Kantor)</label>
+                            <input type="text" class="form-control" name="deskripsi" value="{{ old('deskripsi', $alamat->deskripsi ?? '') }}">
+                        </div>
+                        
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary">Simpan Alamat</button>
+                            
+                            {{-- TOMBOL KEMBALI PINTAR: Arahkan sesuai jejak asal --}}
+                            <a href="{{ ($source ?? 'checkout') === 'profil' ? route('profil.index') : route('checkout.halaman') }}" class="btn btn-secondary">
+                                Kembali
+                            </a>
+                        </div>
                     </form>
                 </div>
             </div>

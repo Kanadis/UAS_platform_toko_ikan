@@ -117,7 +117,7 @@
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end">
                             <li>
-                                <a class="dropdown-item" href="#">
+                                <a class="dropdown-item" href="{{ route('profil.index') }}">
                                     <i class="bi bi-person me-2"></i> Profil
                                 </a>
                             </li>
