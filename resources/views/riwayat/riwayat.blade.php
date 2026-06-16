@@ -11,17 +11,14 @@
             <table class="table table-bordered table-hover">
                 <thead class="table-light">
                     <tr>
-                        <th>ID Transaksi</th>
                         <th>Tanggal</th>
                         <th>Total Harga</th>
                         <th>Status</th>
-                        <th>Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach($riwayat as $trans)
                     <tr>
-                        <td>{{ $trans->id }}</td>
                         <td>{{ $trans->created_at->format('d/m/Y H:i') }}</td>
                         <td>Rp {{ number_format($trans->total_harga, 0, ',', '.') }}</td>
                         <td>
@@ -36,9 +33,6 @@
                             @else
                                 <span class="badge bg-secondary">{{ $trans->status }}</span>
                             @endif
-                        </td>
-                        <td>
-                            <a href="{{ route('produk.show', $trans->id) }}" class="btn btn-sm btn-outline-primary">Detail</a>
                         </td>
                     </tr>
                     @endforeach
