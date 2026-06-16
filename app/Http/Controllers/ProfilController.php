@@ -20,10 +20,22 @@ class ProfilController extends Controller
         /** @var \App\Models\User $user */
         $user = Auth::user();
         
+        // 🛡️ VALIDASI KETAT REGEX 🛡️
         $request->validate([
-            'nama' => 'required|string|max:255',
-            'email' => 'required|email|max:255|unique:users,email,' . $user->id,
-            'no_telp' => 'nullable|string|max:20', 
+            // Nama hanya boleh huruf dan spasi
+            'nama' => ['required', 'string', 'max:255', 'regex:/^[a-zA-Z\s]+$/'],
+            // Email harus format RFC/DNS valid dan diawali huruf/angka
+            'email' => ['required', 'email:rfc,dns', 'max:255', 'unique:users,email,' . $user->id, 'regex:/^[a-zA-Z0-9]/'],
+            // Telepon hanya boleh angka murni, minimal 10 maksimal 15 digit
+            'no_telp' => ['nullable', 'string', 'regex:/^[0-9]+$/', 'min:10', 'max:15'], 
+        ], [
+            // Pesan error kustom
+            'nama.regex' => 'Nama hanya boleh berisi huruf dan spasi.',
+            'no_telp.regex' => 'Nomor telepon hanya boleh berisi angka.',
+            'no_telp.min' => 'Nomor telepon minimal 10 angka.',
+            'no_telp.max' => 'Nomor telepon maksimal 15 angka.',
+            'email.email' => 'Format email tidak valid.',
+            'email.regex' => 'Email harus diawali dengan huruf atau angka.'
         ]);
 
         $user->nama = $request->nama;

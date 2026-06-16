@@ -33,7 +33,6 @@
         @foreach($produk as $item)
         <div class="col-md-6 col-lg-3">
             <div class="card h-100 product-card shadow-sm border-0">
-                {{-- AREA FOTO PRODUK --}}
                 <div class="text-center bg-light" style="height: 180px; overflow: hidden; border-radius: var(--bs-border-radius) var(--bs-border-radius) 0 0;">
                     @if(isset($item->foto) && $item->foto)
                         <img src="{{ asset('storage/' . $item->foto) }}" alt="{{ $item->nama_ikan }}" class="img-fluid w-100 h-100" style="object-fit: cover;">
@@ -47,8 +46,6 @@
                 <div class="card-body d-flex flex-column p-3">
                     <h5 class="card-title text-primary fw-bold mb-2">{{ $item->nama_ikan }}</h5>
                     
-                    {{-- Tulisan Jenis Telah Dihapus Di Sini --}}
-                    
                     <p class="card-text text-muted small mb-2">
                         <i class="bi bi-box-seam"></i> Stok: <span class="fw-bold">{{ number_format($item->stok_berat, 1) }} kg</span>
                     </p>
@@ -60,27 +57,35 @@
                     @if(($item->stok_berat ?? 0) > 0)
                         <span class="badge bg-success mb-3" style="width: fit-content;">Tersedia</span>
                         
-                        <form action="{{ route('keranjang.tambah', $item->id) }}" method="POST" class="mt-auto">
-                            @csrf
-                            {{-- INPUT BISA DIKETIK MANUAL (tanpa atribut readonly) --}}
-                            <div class="input-group mb-3 shadow-sm rounded">
-                                <button class="btn btn-outline-secondary fw-bold" type="button" onclick="kurangi(this)">-</button>
-                                <input type="number" 
-                                       class="form-control text-center fw-bold" 
-                                       name="jumlah" 
-                                       value="1" 
-                                       min="0.1" 
-                                       step="0.1" 
-                                       max="{{ $item->stok_berat }}"
-                                       oninput="validasiInput(this)">
-                                <span class="input-group-text bg-light text-muted">kg</span>
-                                <button class="btn btn-outline-secondary fw-bold" type="button" onclick="tambah(this)">+</button>
-                            </div>
-
-                            <button type="submit" class="btn btn-success w-100 fw-bold shadow-sm">
-                                <i class="bi bi-cart-plus me-1"></i> Pesan Sekarang
+                        {{-- 🛡️ FILTER ROLE ADMIN 🛡️ --}}
+                        @if(Auth::check() && Auth::user()->role === 'admin')
+                            <button class="btn btn-outline-secondary w-100 mt-auto fw-bold" disabled>
+                                <i class="bi bi-shield-lock me-1"></i> Mode Admin
                             </button>
-                        </form>
+                        @else
+                            <form action="{{ route('keranjang.tambah', $item->id) }}" method="POST" class="mt-auto">
+                                @csrf
+                                <div class="input-group mb-3 shadow-sm rounded">
+                                    <button class="btn btn-outline-secondary fw-bold" type="button" onclick="kurangi(this)">-</button>
+                                    <input type="number" 
+                                           class="form-control text-center fw-bold" 
+                                           name="jumlah" 
+                                           value="1" 
+                                           min="0.1" 
+                                           step="0.1" 
+                                           max="{{ $item->stok_berat }}"
+                                           oninput="validasiInput(this)">
+                                    <span class="input-group-text bg-light text-muted">kg</span>
+                                    <button class="btn btn-outline-secondary fw-bold" type="button" onclick="tambah(this)">+</button>
+                                </div>
+
+                                <button type="submit" class="btn btn-success w-100 fw-bold shadow-sm">
+                                    <i class="bi bi-cart-plus me-1"></i> Pesan Sekarang
+                                </button>
+                            </form>
+                        @endif
+                        {{-- ======================== --}}
+
                     @else
                         <span class="badge bg-danger mb-3" style="width: fit-content;">Habis</span>
                         <button class="btn btn-secondary w-100 mt-auto" disabled>Stok Kosong</button>
@@ -104,7 +109,6 @@
 @endif
 @endsection
 
-{{-- JAVASCRIPT UNTUK TOMBOL - DAN + SERTA VALIDASI KETIK MANUAL --}}
 @section('scripts')
 <script>
     function tambah(btn) {
@@ -126,12 +130,9 @@
         }
     }
 
-    // Fungsi pintar jika user mengetik angka secara manual (misal ketik 10 padahal stok cuma 9)
     function validasiInput(input) {
         let max = parseFloat(input.max);
         let val = parseFloat(input.value);
-        
-        // Jika angka yang diketik melebihi stok, otomatis diturunkan ke angka maksimal stok
         if (val > max) {
             input.value = max;
             alert('Wah, melebihi stok! Maksimal pembelian hanya ' + max + ' kg ya.');

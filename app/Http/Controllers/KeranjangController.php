@@ -32,6 +32,11 @@ class KeranjangController extends Controller
         }
 
         $user = Auth::user();
+
+        // 🛡️ ERROR HANDLING 1: CEK ROLE ADMIN 🛡️
+        if ($user->role === 'admin') {
+            return redirect()->back()->with('error', 'Akses ditolak! Admin tidak diperbolehkan melakukan pemesanan.');
+        }
         
         // 2. Pastikan produk yang mau dibeli itu ada
         $produk = Produk::findOrFail($id);
@@ -47,9 +52,39 @@ class KeranjangController extends Controller
                                  ->where('produk_id', $produk->id)
                                  ->first();
 
-        // LOGIKA PINTAR: Ubah input menjadi float (desimal) agar bisa memproses koma/titik
-        $jumlahBeli = (float) $request->input('jumlah', 1);
+        // Mengambil jumlah yang baru diinput pembeli
+        $jumlahBeli = (float) $request->input('jumlah', 0);
 
+        // =========================================================
+        // 🛡️ ERROR HANDLING 2: VALIDASI INPUT KOSONG / MINUS / NOL 🛡️
+        // =========================================================
+        if ($jumlahBeli < 0.1) {
+            return redirect()->back()->with('error', 'Gagal! Jumlah pesanan tidak valid. Minimal pembelian adalah 0.1 kg.');
+        }
+
+        // =========================================================
+        // 🛡️ ERROR HANDLING 3: VALIDASI STOK KERANJANG VS GUDANG 🛡️
+        // =========================================================
+        $totalDiminta = $jumlahBeli;
+        if ($detail) {
+            $totalDiminta += $detail->jumlah;
+        }
+
+        if ($totalDiminta > $produk->stok_berat) {
+            
+            $sisaBisaDipesan = $produk->stok_berat - ($detail ? $detail->jumlah : 0);
+            
+            if ($detail) {
+                $pesanError = 'Gagal! Anda sudah memiliki ' . $detail->jumlah . ' kg ' . $produk->nama_ikan . ' di keranjang. Sisa stok yang bisa ditambahkan hanya ' . $sisaBisaDipesan . ' kg lagi.';
+            } else {
+                $pesanError = 'Gagal! Stok ' . $produk->nama_ikan . ' tidak mencukupi.';
+            }
+            
+            return redirect()->back()->with('error', $pesanError);
+        }
+        // =========================================================
+
+        // Jika lolos semua validasi, lanjutkan proses simpan
         if ($detail) {
             // Jika ikan sudah ada, tambahkan jumlah desimalnya
             $detail->jumlah += $jumlahBeli;
