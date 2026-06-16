@@ -116,11 +116,13 @@
                             <i class="bi bi-person-circle"></i> {{ Auth::user()->nama }}
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end">
-                            <li>
-                                <a class="dropdown-item" href="{{ route('profil.index') }}">
-                                    <i class="bi bi-person me-2"></i> Profil
-                                </a>
-                            </li>
+                            @if(auth()->user()->role !== 'admin')
+                                <li>
+                                    <a class="dropdown-item" href="{{ route('profil.index') }}">
+                                        <i class="bi bi-person me-2"></i> Profil
+                                    </a>
+                                </li>
+                            @endif
                             @if(Auth::user()->role === 'admin')
                                 <li><hr class="dropdown-divider"></li>
                                 <li>

@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Transaksi;
+use App\Models\Alamat;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+
 
 class OrderController extends Controller
 {
@@ -23,9 +25,9 @@ class OrderController extends Controller
      */
     public function show($id)
     {
-        $transaction = Transaksi::with('DetailTransaksi.produk')->findOrFail($id);
-
-        return view('order.show', compact('transaction'));
+        $transaction = Transaksi::with(['user', 'detailTransaksi.produk', 'pembayaran'])->findOrFail($id);
+        $alamat = Alamat::where('user_id', $transaction->user_id)->first(); // ambil alamat
+        return view('order.show', compact('transaction', 'alamat'));
     }
 
     /**
@@ -37,7 +39,7 @@ class OrderController extends Controller
         'status' => 'required|in:menunggu_pembayaran,diproses,dikirim,selesai,dibatalkan',
     ]);
 
-    $transaction = Transaksi::findOrFail($id);
+    $transaction = Transaksi::with(['user', 'detailTransaksi.produk', 'pembayaran'])->findOrFail($id);
     $oldStatus = $transaction->status;
     $newStatus = $request->status;
 

@@ -10,6 +10,16 @@
                     <h5>Pelanggan: {{ $transaction->user->nama ?? '-' }}</h5>
                     <p>Email: {{ $transaction->user->email ?? '-' }}</p>
 
+                    {{-- ALAMAT --}}
+                    <h5>Alamat Pengiriman</h5>
+                    @if($alamat)
+                        <p>{{ $alamat->alamat_lengkap }}</p>
+                        <p>Telp: {{ $alamat->nomor_telp_alamat ?? '-' }}</p>
+                        <p>Deskripsi: {{ $alamat->deskripsi ?? '-' }}</p>
+                    @else
+                        <p class="text-muted">Alamat tidak tersedia.</p>
+                    @endif
+
                     <h5>Produk yang Dipesan</h5>
                     <table class="table">
                         <thead>

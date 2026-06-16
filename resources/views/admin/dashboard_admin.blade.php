@@ -81,7 +81,7 @@
                         <td>
                             @if($item->foto)
                                 <img src="{{ asset('storage/' . $item->foto) }}"
-                                     alt="{{ $item->nama_ikan }}" class="foto-thumb">
+                                    alt="{{ $item->nama_ikan }}" class="foto-thumb">
                             @else
                                 <div class="foto-placeholder">
                                     <i class="bi bi-image"></i>
