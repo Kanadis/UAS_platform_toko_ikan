@@ -47,11 +47,20 @@ class AuthController extends Controller
     // Proses register
     public function register(Request $request)
     {
+        // 🛡️ VALIDASI KETAT REGEX 🛡️
         $request->validate([
-            'nama' => 'required|string|max:255',
-            'no_telp' => 'nullable|string|max:15',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8|confirmed',
+            'nama' => ['required', 'string', 'max:255', 'regex:/^[a-zA-Z\s]+$/'],
+            'no_telp' => ['nullable', 'string', 'regex:/^[0-9]+$/', 'min:10', 'max:15'],
+            // Tambahkan regex untuk memastikan email diawali huruf/angka
+            'email' => ['required', 'string', 'email:rfc,dns', 'max:255', 'unique:users', 'regex:/^[a-zA-Z0-9]/'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
+        ], [
+            'nama.regex' => 'Nama hanya boleh berisi huruf dan spasi.',
+            'no_telp.regex' => 'Nomor telepon hanya boleh berisi angka.',
+            'no_telp.min' => 'Nomor telepon minimal 10 angka.',
+            'no_telp.max' => 'Nomor telepon maksimal 15 angka.',
+            'email.email' => 'Format email tidak valid (harus menggunakan @ dan domain asli).',
+            'email.regex' => 'Email harus diawali dengan huruf atau angka.' // Pesan error baru
         ]);
         
         $user = User::create([

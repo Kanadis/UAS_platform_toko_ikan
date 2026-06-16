@@ -35,8 +35,8 @@
                         <div class="d-flex gap-2">
                             <button type="submit" class="btn btn-primary">Simpan Alamat</button>
                             
-                            {{-- TOMBOL KEMBALI PINTAR: Arahkan sesuai jejak asal --}}
-                            <a href="{{ ($source ?? 'checkout') === 'profil' ? route('profil.index') : route('checkout.halaman') }}" class="btn btn-secondary">
+                            {{-- TOMBOL KEMBALI ANTI-JEBAKAN: Arahkan ke url('/keranjang') jika dari checkout --}}
+                            <a href="{{ ($source ?? 'checkout') === 'profil' ? route('profil.index') : url('/keranjang') }}" class="btn btn-secondary">
                                 Kembali
                             </a>
                         </div>
